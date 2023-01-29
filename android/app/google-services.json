@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "361073120568",
+    "project_id": "iupathwayguide",
+    "storage_bucket": "iupathwayguide.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361073120568:android:5d953bdb5efadc77c09dcd",
+        "android_client_info": {
+          "package_name": "com.example.iu_pathway_guide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361073120568-4tr76khvqa9i2s2tml8ds9oaiqv7uqos.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp1uW0XYtOdXO8pBAlaLr-RYJvPfJB3k8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361073120568-4tr76khvqa9i2s2tml8ds9oaiqv7uqos.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

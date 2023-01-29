@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 55 55">
+  <g id="Group_22" data-name="Group 22" transform="translate(-189 -722)">
+    <circle id="Ellipse_12" data-name="Ellipse 12" cx="27.5" cy="27.5" r="27.5" transform="translate(189 722)" fill="#ea4335"/>
+    <path id="Icon_awesome-google" data-name="Icon awesome-google" d="M25,14.634c0,7.845-4.964,13.428-12.3,13.428C5.676,28.063,0,21.919,0,14.313S5.676.563,12.7.563a11.731,11.731,0,0,1,8.519,3.6l-3.458,3.6C13.243,3.035,4.831,6.584,4.831,14.313c0,4.8,3.54,8.682,7.874,8.682a7.041,7.041,0,0,0,7.213-5.927H12.7V12.339H24.8A13.015,13.015,0,0,1,25,14.634Z" transform="translate(204 735.483)" fill="#fff"/>
+  </g>
+</svg>
