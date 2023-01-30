@@ -390,9 +390,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                 ],
                               ),
                             ),
-                            Text("${_locationData!.altitude}"),
-                            Text("${_locationData!.latitude}"),
-                            Text("${_locationData!.longitude}"),
                             Container(
                               width: double.infinity,
                               margin: const EdgeInsets.symmetric(
@@ -408,8 +405,21 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                         blurRadius: 5,
                                         spreadRadius: 2)
                                   ],
-                                  image: const DecorationImage(
-                                      image: AssetImage('assets/map-image.png'),
+                                  image: DecorationImage(
+                                      image: _locationData!.altitude! <
+                                              snapshot.data!.docs.last
+                                                  .get("floor 1")
+                                          ? AssetImage('assets/1st-floor.jpg')
+                                          : _locationData!.altitude! >
+                                                      snapshot.data!.docs.last
+                                                          .get("floor 1") &&
+                                                  _locationData!.altitude! <
+                                                      snapshot.data!.docs.last
+                                                          .get("floor 2")
+                                              ? AssetImage(
+                                                  'assets/2nd-floor.png')
+                                              : AssetImage(
+                                                  'assets/map-image.png'),
                                       fit: BoxFit.contain)),
                             )
                           ],
