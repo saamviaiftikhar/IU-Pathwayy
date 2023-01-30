@@ -393,7 +393,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white
                   ),
                   height: height,
                   width: width,
@@ -498,7 +498,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         spreadRadius: 2,
                                         blurRadius: 5)
                                   ]),
-                              height: height,
+                              height: height*1.1,
                               width: width,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -623,7 +623,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       // textInputAction: TextInputAction.next,
                                       ),
                                   SizedBox(
-                                    height: 20,
+                                    height: 15,
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20),
@@ -641,7 +641,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 10,
+                                    height: 5,
                                   ),
                                   _user.selectedCourses.isNotEmpty
                                       ? Wrap(
@@ -664,46 +664,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             onChanged: selectCourses,
                                           ),
                                         ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                    height: 45.0,
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<Color>(
-                                                    const Color(0xff1D468A)),
-                                            shape: MaterialStateProperty.all<
-                                                    RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
-                                                    side: const BorderSide(
-                                                        color: Colors
-                                                            .transparent)))),
-                                        onPressed: () async {
-                                          setState(() {
-                                            updateProfile();
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Update',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto-Bold'),
-                                        )),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 1),
+                                    child: Container(
+                                      // margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                      height: 45.0,
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<Color>(
+                                                      const Color(0xff1D468A)),
+                                              shape: MaterialStateProperty.all<
+                                                      RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                      side: const BorderSide(
+                                                          color: Colors
+                                                              .transparent)))),
+                                          onPressed: () async {
+                                            setState(() {
+                                              updateProfile();
+                                            });
+                                          },
+                                          child: const Text(
+                                            'Update',
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Roboto-Bold'),
+                                          )),
+                                    ),
                                   ),
-                                  SizedBox(
-                                    height: height * 0.1,
-                                  ),
+                                  // SizedBox(height: height*0.1,)
                                 ],
                               ),
                             ),
                           ),
                         ),
+                        SizedBox(height: height*0.14,)
                       ]),
                 );
               },
