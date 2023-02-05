@@ -108,16 +108,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'createdAt': DateTime.now(),
         });
 
-        // DocumentSnapshot dashboardQuery = await FirebaseFirestore.instance
-        //     .collection('settings')
-        //     .doc('dashboard')
-        //     .get();
-
-        // final dashboardData = dashboardQuery.data() as Map<String, dynamic>;
-
-        // dashboardData['totalUsers'] = dashboardData['totalUsers'] + 1;
-        // _firestore.collection('settings').doc('dashboard').set(dashboardData);
-
         _auth
             .createUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text)
@@ -126,10 +116,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             'name': nameController.text,
             'email': emailController.text,
             // 'address': addressController.text,
-            // 'phone': phoneController.text,
+            // 'phone': phoneController.text,q
             'createdAt': DateTime.now(),
             'status': 'ACTIVE',
             'isSubscribed': false,
+            'isAdmin': false,
             'id': value.user!.uid,
             'semesters': _selectedSemester,
             'selectedCourses': coursesName,

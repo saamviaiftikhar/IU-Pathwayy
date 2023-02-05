@@ -439,7 +439,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     (context, int index) {
                                                   return HomeScreenStreams(
                                                       semester: _users[index]
-                                                          .semester);
+                                                          .semester,
+                                                      isAdmin:
+                                                          users.get("isAdmin"));
                                                 });
                                           }),
                                     ),
@@ -464,7 +466,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class HomeScreenStreams extends StatefulWidget {
   String? semester;
-  HomeScreenStreams({Key? key, required this.semester}) : super(key: key);
+  bool? isAdmin;
+  HomeScreenStreams({Key? key, required this.semester, this.isAdmin})
+      : super(key: key);
 
   @override
   State<HomeScreenStreams> createState() => _HomeScreenStreamsState();
@@ -602,7 +606,9 @@ class _HomeScreenStreamsState extends State<HomeScreenStreams> {
                     day: _fetchCourses[index].day as String,
                     courseId: _fetchCourses[index].id as String,
                     onTap: () {
-                      Get.to(() => NavigationScreen());
+                      Get.to(() => NavigationScreen(
+                            isAdmin: widget.isAdmin,
+                          ));
                     });
               }),
         );

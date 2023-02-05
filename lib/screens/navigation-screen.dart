@@ -7,7 +7,8 @@ import '../widgets/drawer-widget.dart';
 import 'package:location/location.dart';
 
 class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({super.key});
+  bool? isAdmin;
+  NavigationScreen({super.key,this.isAdmin = true});
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -23,65 +24,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
   LocationData? _locationData;
   double? Floor1;
   double? Floor2;
+  String? floorId;
+
+  String? _selectedFloor;
+  TextEditingController _floorController = TextEditingController();
+
+  List floors = [
+    'floor 1',
+    'floor 2',
+    'floor 3',
+    'floor 4',
+  ];
 
   void getLocation() async {
-    //    bool serviceEnabled;
-    // LocationPermission permission;
-
-    // // Test if location services are enabled.
-    // serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    // if (!serviceEnabled) {
-    //   // Location services are not enabled don't continue
-    //   // accessing the position and request users of the
-    //   // App to enable the location services.
-    //   return Future.error('Location services are disabled.');
-    // }
-
-    // permission = await Geolocator.checkPermission();
-    // if (permission == LocationPermission.denied) {
-    //   permission = await Geolocator.requestPermission();
-    //   if (permission == LocationPermission.denied) {
-    //     // Permissions are denied, next time you could try
-    //     // requesting permissions again (this is also where
-    //     // Android's shouldShowRequestPermissionRationale
-    //     // returned true. According to Android guidelines
-    //     // your App should show an explanatory UI now.
-    //     return Future.error('Location permissions are denied');
-    //   }
-    // }
-
-    // if (permission == LocationPermission.deniedForever) {
-    //   // Permissions are denied forever, handle appropriately.
-    //   return Future.error(
-    //     'Location permissions are permanently denied, we cannot request permissions.');
-    // }
-
-    // await Geolocator.getCurrentPosition();
-
-    //   final LocationSettings locationSettings = LocationSettings(
-    //     accuracy: LocationAccuracy.high,
-    //     distanceFilter: 10,
-    //   );
-    //   StreamSubscription<Position> positionStream =
-    //       Geolocator.getPositionStream(locationSettings: locationSettings)
-    //           .listen((Position? position) {
-    //     setState(() {
-    //       positionVal = position!;
-    //     });
-    //   });
-    // bool _serviceEnabled;
-
-    // _serviceEnabled = await location.serviceEnabled();
-    // if (!_serviceEnabled) {
-    //   _serviceEnabled = await location.requestService();
-    //   if (!_serviceEnabled) {
-    //     return;
-    //   }
-    // }
-
-    // _locationData = await location.getLocation();
-    // setState(() {});
-
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
@@ -126,6 +81,115 @@ class _NavigationScreenState extends State<NavigationScreen> {
           )
         : SafeArea(
             child: Scaffold(
+                floatingActionButton: widget.isAdmin!
+                    ? FloatingActionButton.extended(
+                        label: const Text('Add Floor'),
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                  builder: (context, setState) {
+                                return SizedBox(
+                                  height: 400,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text('Add Floor Here',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black)),
+                                        SizedBox(height: 20),
+                                        Text("${_locationData!.altitude}"),
+                                        SizedBox(height: 20),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: DropdownButton(
+                                              underline: Container(),
+                                              // icon: Icon(Icons
+                                              //     .calendar_view_day_outlined),
+                                              isExpanded: true,
+                                              hint: Text(
+                                                'Select Floor',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Color(0xff979797),
+                                                ),
+                                              ), // Not necessary for Option 1
+                                              value: _selectedFloor,
+                                              onChanged: (newValue) {
+                                                setState(() {
+                                                  _selectedFloor =
+                                                      newValue as String?;
+                                                });
+                                              },
+                                              items: floors.map((location) {
+                                                return DropdownMenuItem(
+                                                  child: new Text(
+                                                    location,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Color(0xff979797),
+                                                    ),
+                                                  ),
+                                                  value: location,
+                                                );
+                                              }).toList()),
+                                        ),
+                                        SizedBox(height: 20),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: TextFormField(
+                                            controller: _floorController,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              hintText: 'Enter Floor Value',
+                                              hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xff979797),
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _firestore
+                                                .collection("floor")
+                                                .doc(floorId)
+                                                .update({
+                                              "$_selectedFloor": int.parse(
+                                                  _floorController.text)
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Add'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
+                            },
+                          );
+                        },
+                      )
+                    : SizedBox.shrink(),
                 resizeToAvoidBottomInset: false,
                 key: _globalKey,
                 // bottomNavigationBar: MyBottomBar(),
@@ -138,8 +202,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       if (!snapshot.hasData) {
                         return Center(child: CircularProgressIndicator());
                       }
-                      print(snapshot.data!.docs.last.get("floor 1"));
-                      print(_locationData!.altitude);
+                      floorId = snapshot.data!.docs.first.id;
+
                       return Container(
                         width: double.infinity,
                         height: MediaQuery.of(context).size.height,
@@ -233,7 +297,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                           height: 35,
                                           decoration: BoxDecoration(
                                               color: _locationData!.altitude! <
-                                                      snapshot.data!.docs.last
+                                                      snapshot.data!.docs.first
                                                           .get("floor 1")
                                                   ? Color(0xff1D468A)
                                                   : Colors.transparent,
@@ -241,12 +305,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                           child: Text(
                                             '1',
                                             style: TextStyle(
-                                                color: _locationData!
-                                                            .altitude! <
-                                                        snapshot.data!.docs.last
-                                                            .get("floor 1")
-                                                    ? Colors.white
-                                                    : Color(0xff393939),
+                                                color:
+                                                    _locationData!.altitude! <
+                                                            snapshot.data!.docs
+                                                                .first
+                                                                .get("floor 1")
+                                                        ? Colors.white
+                                                        : Color(0xff393939),
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -259,11 +324,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                           decoration: BoxDecoration(
                                               color: _locationData!.altitude! >
                                                           snapshot
-                                                              .data!.docs.last
+                                                              .data!.docs.first
                                                               .get("floor 1") &&
                                                       _locationData!.altitude! <
                                                           snapshot
-                                                              .data!.docs.last
+                                                              .data!.docs.first
                                                               .get("floor 2")
                                                   ? Color(0xff1D468A)
                                                   : Colors.transparent,
@@ -274,14 +339,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                                 fontSize: 16,
                                                 color: _locationData!
                                                                 .altitude! >
-                                                            snapshot
-                                                                .data!.docs.last
+                                                            snapshot.data!.docs
+                                                                .first
                                                                 .get(
                                                                     "floor 1") &&
                                                         _locationData!
                                                                 .altitude! <
-                                                            snapshot
-                                                                .data!.docs.last
+                                                            snapshot.data!.docs
+                                                                .first
                                                                 .get("floor 2")
                                                     ? Color(0xffFFFFFF)
                                                     : Color(0xff393939),
@@ -407,14 +472,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                   ],
                                   image: DecorationImage(
                                       image: _locationData!.altitude! <
-                                              snapshot.data!.docs.last
+                                              snapshot.data!.docs.first
                                                   .get("floor 1")
                                           ? AssetImage('assets/1st-floor.jpg')
                                           : _locationData!.altitude! >
-                                                      snapshot.data!.docs.last
+                                                      snapshot.data!.docs.first
                                                           .get("floor 1") &&
                                                   _locationData!.altitude! <
-                                                      snapshot.data!.docs.last
+                                                      snapshot.data!.docs.first
                                                           .get("floor 2")
                                               ? AssetImage(
                                                   'assets/2nd-floor.png')

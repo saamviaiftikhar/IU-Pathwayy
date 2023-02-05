@@ -516,8 +516,8 @@ class _FourthScreenState extends State<FourthScreen> {
                                                                 color: Colors
                                                                     .transparent)))),
                                                 onPressed: () {
-                                                  Get.to(() =>
-                                                      const NavigationScreen());
+                                                  Get.to(
+                                                      () => NavigationScreen());
                                                 },
                                                 child: const Text(
                                                   'Search',
