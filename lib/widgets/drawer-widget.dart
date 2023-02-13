@@ -225,7 +225,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onTap: () {
-                                      Get.to(() => const ExploreScreen());
+                                      Get.to(() => ExploreScreen(
+                                            isGuest: false,
+                                          ));
                                       // Get.back();
                                     },
                                   ),

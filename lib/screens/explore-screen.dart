@@ -16,7 +16,8 @@ import 'navigation-screen.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key});
+  final bool isGuest;
+  const ExploreScreen({super.key, required this.isGuest});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -31,30 +32,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
 
-  void onAuthChange() {
-    _auth.authStateChanges().listen((User? user) async {
-      if (user == null) {
-        Get.to(() => const LoginScreen());
-      } else {
-        DocumentSnapshot query =
-            await _firestore.collection('users').doc(user.email).get();
-        if (query.exists) {
-          final data = query.data() as Map<String, dynamic>;
-
-          if (data["status"] != 'ACTIVE') {
-            Get.to(() => const LoginScreen());
-          }
-        } else {
-          Get.to(() => const LoginScreen());
-        }
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    onAuthChange();
   }
 
   bool _value = false;
@@ -165,7 +145,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       child: Scaffold(
         key: _globalKey,
         drawer: DrawerWidget(),
-        bottomNavigationBar: CustomBottomNavBar(context, 'explore'),
+        bottomNavigationBar:
+            CustomBottomNavBar(context, 'explore', isGuest: widget.isGuest),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         body: StreamBuilder<DocumentSnapshot>(
@@ -243,7 +224,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         children: [
                           InkWell(
                               onTap: () {
-                                _globalKey.currentState!.openDrawer();
+                                if (widget.isGuest) {
+                                } else {
+                                  _globalKey.currentState!.openDrawer();
+                                }
                               },
                               child: SvgPicture.asset('assets/menu.svg')),
                           const Text(
@@ -256,7 +240,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              Get.to(() => EditProfileScreen());
+                              if (widget.isGuest) {
+                              } else {
+                                Get.to(() => EditProfileScreen());
+                              }
                             },
                             child: (profilePic != '')
                                 ? CircleAvatar(
@@ -306,7 +293,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                           side: const BorderSide(
                                               color: Colors.transparent)))),
                               onPressed: () {
-                                Get.to(() => const FourthScreen());
+                                if (widget.isGuest) {
+                                } else {
+                                  Get.to(() => const FourthScreen());
+                                }
                               },
                               child: Row(
                                 mainAxisAlignment:
@@ -694,7 +684,9 @@ class _ExploreScreenStreamsState extends State<ExploreScreenStreams> {
                     rating: _explorePlaces[index].rating as double,
                     placeId: _explorePlaces[index].id as String,
                     onTap: () {
-                      Get.to(() => NavigationScreen());
+                      Get.to(() => NavigationScreen(
+                            isGuest: true,
+                          ));
                     });
               }),
         );

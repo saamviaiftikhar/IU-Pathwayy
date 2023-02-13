@@ -118,6 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // 'address': addressController.text,
             // 'phone': phoneController.text,q
             'createdAt': DateTime.now(),
+          
             'status': 'ACTIVE',
             'isSubscribed': false,
             'isAdmin': false,

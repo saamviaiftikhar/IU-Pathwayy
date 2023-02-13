@@ -20,7 +20,9 @@ class _MyBottomBarState extends State<MyBottomBar> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    ExploreScreen(),
+    ExploreScreen(
+      isGuest: false,
+    ),
     FavouriteScreen(),
     ProfileScreen(),
   ];

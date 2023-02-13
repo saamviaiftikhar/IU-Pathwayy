@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:iu_pathway_guide/screens/explore-screen.dart';
 
 import '../screens/splash-screen.dart';
 
@@ -12,10 +13,14 @@ class GoogleLogin {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     GoogleSignIn googleSignIn = GoogleSignIn();
     try {
+      print("Google");
       var result = await googleSignIn.signIn();
       if (result == null) {
         return;
       }
+
+      print("Google sign in successful");
+      print(result.email);
 
       final userData = await result.authentication;
 
@@ -33,9 +38,12 @@ class GoogleLogin {
             .doc(finalResult.user!.email)
             .get();
         if (userQuery.exists) {
-          final data = query.data() as Map<String, dynamic>;
+          final data = userQuery.data() as Map<String, dynamic>;
           if (data["status"] == 'ACTIVE') {
-            Get.to(() => const SplashScreen());
+            print("Go to explore");
+            Get.to(() => ExploreScreen(
+                  isGuest: true,
+                ));
           } else {
             const SnackBar(content: Text('The user has been blocked.'));
             FirebaseAuth.instance.signOut();
@@ -65,19 +73,24 @@ class GoogleLogin {
           'email': finalResult.user!.email,
           // 'address': addressController.text,
           // 'phone': '',
+
+          'isAdmin': false,
           'createdAt': DateTime.now(),
           'status': 'ACTIVE',
           'isSubscribed': false,
           'id': finalResult.user!.uid,
+          'semesters': "",
+          'selectedCourses': [],
         });
 
-        Get.to(() => const SplashScreen());
+        print("working fine here");
+
+        Get.to(() => ExploreScreen(
+              isGuest: true,
+            ));
       }
 
       print(finalResult.user!.uid);
-      // print('Result $result');
-      // print(result.displayName);
-      // print(result.email);
     } catch (e) {
       print(e);
     }

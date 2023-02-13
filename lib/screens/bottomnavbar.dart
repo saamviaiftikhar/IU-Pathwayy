@@ -16,7 +16,9 @@ class _HomePageState extends State<HomePage> {
 
   final pages = [
     const HomePage(),
-    const ExploreScreen(),
+     ExploreScreen(
+      isGuest: false,  
+    ),
     const FavouriteScreen(),
     const ProfileScreen(),
   ];

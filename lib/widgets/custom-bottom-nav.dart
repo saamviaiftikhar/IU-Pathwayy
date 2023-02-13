@@ -7,7 +7,7 @@ import '../screens/explore-screen.dart';
 import '../screens/fav-screen.dart';
 import '../screens/home-screen.dart';
 
-Widget CustomBottomNavBar(BuildContext context, page) {
+Widget CustomBottomNavBar(BuildContext context, page, {bool? isGuest}) {
   var width = MediaQuery.of(context).size.width;
   var height = MediaQuery.of(context).size.height;
   var grayColor = Colors.grey;
@@ -30,7 +30,13 @@ Widget CustomBottomNavBar(BuildContext context, page) {
           children: [
             IconButton(
               onPressed: () {
-                Get.to(() => HomeScreen());
+                if(isGuest != null && isGuest == true){
+
+                }
+                else{
+                  Get.to(() => HomeScreen());
+                }
+
               },
               icon: SvgPicture.asset('assets/home.svg',
                   height: 30, color: page == 'home' ? activeColor : grayColor),
@@ -51,7 +57,9 @@ Widget CustomBottomNavBar(BuildContext context, page) {
           children: [
             IconButton(
               onPressed: () {
-                Get.to(() => ExploreScreen());
+                Get.to(() => ExploreScreen(
+                      isGuest: isGuest != null ? isGuest : false,
+                    ));
               },
               icon: SvgPicture.asset(
                 'assets/search.svg',
@@ -75,7 +83,13 @@ Widget CustomBottomNavBar(BuildContext context, page) {
           children: [
             IconButton(
               onPressed: () {
-                Get.to(() => FavouriteScreen());
+                if(isGuest != null && isGuest == true){
+
+                }
+                else{
+                  Get.to(() => FavouriteScreen());
+                }
+                
               },
               icon: SvgPicture.asset('assets/favourite.svg',
                   height: 30,
@@ -97,7 +111,13 @@ Widget CustomBottomNavBar(BuildContext context, page) {
           children: [
             IconButton(
               onPressed: () {
-                Get.to(() => EditProfileScreen());
+                if(isGuest != null && isGuest == true){
+
+                }
+                else{
+                  Get.to(() => EditProfileScreen());
+                }
+                
               },
               icon: SvgPicture.asset('assets/feather-user.svg',
                   height: 30, color: page == 'user' ? activeColor : grayColor),

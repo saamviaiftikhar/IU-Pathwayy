@@ -8,7 +8,8 @@ import 'package:location/location.dart';
 
 class NavigationScreen extends StatefulWidget {
   bool? isAdmin;
-  NavigationScreen({super.key,this.isAdmin = true});
+  bool? isGuest;
+  NavigationScreen({super.key, this.isGuest, this.isAdmin = true});
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -68,6 +69,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void initState() {
     getLocation();
+    widget.isAdmin = widget.isGuest != null ? false : false;
     super.initState();
   }
 
@@ -194,7 +196,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 key: _globalKey,
                 // bottomNavigationBar: MyBottomBar(),
                 backgroundColor: Colors.black,
-                bottomNavigationBar: CustomBottomNavBar(context, 'explore'),
+                bottomNavigationBar: CustomBottomNavBar(context, 'explore',
+                    isGuest: widget.isGuest),
                 drawer: DrawerWidget(),
                 body: StreamBuilder(
                     stream: _firestore.collection("floor").snapshots(),
@@ -278,8 +281,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                               const EdgeInsets.only(bottom: 30),
                                           child: InkWell(
                                               onTap: () {
-                                                _globalKey.currentState!
-                                                    .openDrawer();
+                                                if (widget.isGuest != null &&
+                                                    widget.isGuest!)
+                                                  _globalKey.currentState!
+                                                      .openDrawer();
                                               },
                                               child: SvgPicture.asset(
                                                   'assets/reverse-menu.svg')),
