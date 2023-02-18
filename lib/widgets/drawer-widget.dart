@@ -13,7 +13,8 @@ import '../screens/home-screen.dart';
 import '../screens/sign-in-screen.dart';
 
 class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({super.key});
+  final bool isGuest;
+  const DrawerWidget({super.key, required this.isGuest});
 
   @override
   State<DrawerWidget> createState() => _DrawerWidgetState();
@@ -126,7 +127,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Get.to(EditProfileScreen());
+                                  if (widget.isGuest) {
+                                  } else {
+                                    Get.to(EditProfileScreen());
+                                  }
                                 },
                                 child: (profilePic != '')
                                     ? CircleAvatar(
@@ -201,7 +205,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onTap: () {
-                                      Get.to(() => const HomeScreen());
+                                      if (widget.isGuest) {
+                                      } else {
+                                        Get.to(() => const HomeScreen());
+                                      }
+
                                       // Get.back();
                                     },
                                   ),
@@ -225,9 +233,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onTap: () {
-                                      Get.to(() => ExploreScreen(
-                                            isGuest: false,
-                                          ));
+                                      if (widget.isGuest) {
+                                      } else {
+                                        Get.to(() => ExploreScreen(
+                                              isGuest: false,
+                                            ));
+                                      }
+
                                       // Get.back();
                                     },
                                   ),
@@ -246,7 +258,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onTap: () {
-                                      Get.to(() => const FavouriteScreen());
+                                      if (widget.isGuest) {
+                                      } else {
+                                        Get.to(() => const FavouriteScreen());
+                                      }
+
                                       // Get.back();
                                     },
                                   ),
@@ -265,7 +281,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     onTap: () {
-                                      Get.to(() => const EditProfileScreen());
+                                      if (widget.isGuest) {
+                                      } else {
+                                        Get.to(() => const EditProfileScreen());
+                                      }
                                     },
                                   ),
                                 ],

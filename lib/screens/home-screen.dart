@@ -141,7 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         bottomNavigationBar: CustomBottomNavBar(context, 'home'),
-        drawer: DrawerWidget(),
+        drawer: DrawerWidget(
+          isGuest: false,
+        ),
         body: StreamBuilder<DocumentSnapshot>(
           stream: _firestore.collection('users').doc(user?.email).snapshots(),
           builder: (context, snapshot) {

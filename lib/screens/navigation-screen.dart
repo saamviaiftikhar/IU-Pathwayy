@@ -198,7 +198,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 backgroundColor: Colors.black,
                 bottomNavigationBar: CustomBottomNavBar(context, 'explore',
                     isGuest: widget.isGuest),
-                drawer: DrawerWidget(),
+                drawer: DrawerWidget(
+                  isGuest: widget.isGuest!,
+                ),
                 body: StreamBuilder(
                     stream: _firestore.collection("floor").snapshots(),
                     builder: (context, snapshot) {

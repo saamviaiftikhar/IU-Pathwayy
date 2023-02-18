@@ -169,7 +169,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     return SafeArea(
       child: Scaffold(
         key: _globalKey,
-        drawer: DrawerWidget(),
+        drawer: DrawerWidget(
+          isGuest: false,
+        ),
         bottomNavigationBar: CustomBottomNavBar(context, 'favourite'),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,

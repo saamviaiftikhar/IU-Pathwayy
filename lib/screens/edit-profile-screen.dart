@@ -54,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void onAuthChange() {
     _auth.authStateChanges().listen((User? user) async {
       if (user == null) {
-        Get.to(() => const LoginScreen());
+        Get.to(() => LoginScreen());
       } else {
         DocumentSnapshot query =
             await _firestore.collection('users').doc(user.email).get();

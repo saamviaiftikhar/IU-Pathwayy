@@ -18,7 +18,8 @@ import 'BottomNavigationBar/bottom-navigation-bar.dart';
 import 'splash-screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final bool isGuest;
+  const LoginScreen({super.key, this.isGuest = false});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -30,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obscureText = true;
   final _formKey = GlobalKey<FormState>();
   var googleLogin = GoogleLogin();
+  bool isGuest = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -38,32 +40,33 @@ class _LoginScreenState extends State<LoginScreen> {
   FocusNode passFocus = FocusNode();
 
   void onAuthChange() {
-    print("Function working");
-    _auth.authStateChanges().listen((User? user) async {
-      print(user);
-      if (user == null) {
-        Get.to(() => const LoginScreen());
-      } else {
-        DocumentSnapshot query =
-            await _firestore.collection('users').doc(user.email).get();
-        print(query);
-        if (query.exists) {
-          final data = query.data() as Map<String, dynamic>;
-          print(data);
-          if (data["status"] == 'ACTIVE') {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: ((context) => HomeScreen())));
-          }
-        } else {
+    if (widget.isGuest == false) {
+      _auth.authStateChanges().listen((User? user) async {
+        if (user == null) {
           Get.to(() => const LoginScreen());
+        } else {
+          DocumentSnapshot query =
+              await _firestore.collection('users').doc(user.email).get();
+
+          if (query.exists) {
+            final data = query.data() as Map<String, dynamic>;
+
+            if (data["status"] == 'ACTIVE') {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: ((context) => HomeScreen())));
+            }
+          } else {
+            Get.to(() => const LoginScreen());
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    print("Init State");
     onAuthChange();
     emailFocus = FocusNode();
     passFocus = FocusNode();
@@ -86,8 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
           await _firestore.collection('users').doc(value.user!.email).get();
       if (query.exists) {
         final data = query.data() as Map<String, dynamic>;
-        print("Print");
-        print(data["status"]);
         if (data["status"] == 'ACTIVE') {
           Get.to(() => const HomeScreen());
         } else {

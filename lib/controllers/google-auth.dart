@@ -13,14 +13,12 @@ class GoogleLogin {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     GoogleSignIn googleSignIn = GoogleSignIn();
     try {
-      print("Google");
       var result = await googleSignIn.signIn();
       if (result == null) {
         return;
       }
 
-      print("Google sign in successful");
-      print(result.email);
+      var email = result.email.split("@");
 
       final userData = await result.authentication;
 
@@ -40,10 +38,15 @@ class GoogleLogin {
         if (userQuery.exists) {
           final data = userQuery.data() as Map<String, dynamic>;
           if (data["status"] == 'ACTIVE') {
-            print("Go to explore");
-            Get.to(() => ExploreScreen(
-                  isGuest: true,
-                ));
+            if (email[1] == "gmail.com") {
+              Get.to(() => ExploreScreen(
+                    isGuest: true,
+                  ));
+            } else {
+              Get.to(() => ExploreScreen(
+                    isGuest: false,
+                  ));
+            }
           } else {
             const SnackBar(content: Text('The user has been blocked.'));
             FirebaseAuth.instance.signOut();
