@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  startTime() async {
+    Duration _duration = const Duration(seconds: 5);
+    return Timer(_duration, navigationPage);
+  }
+
+  void navigationPage() {
+    // SharedPreferences.getInstance().then((value) {
+    //   if (value.containsKey('userId')) {
+    //     Navigator.pushReplacement(context,
+    //         MaterialPageRoute(builder: (context) => const HomeScreen()));
+    //   } else {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const SecondScreen()));
+    //   }
+    // });
+  }
+
+  @override
+  void initState() {
+    startTime();
+    super.initState();
+  }
 
   // void onAuthChange() {
   //   _auth.authStateChanges().listen((User? user) async {
@@ -108,15 +130,6 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                       )
                     ]),
-                InkWell(
-                  onTap: () {
-                    Get.to(() => const SecondScreen());
-                  },
-                  child: SizedBox(
-                    width: width,
-                    height: height,
-                  ),
-                )
               ],
             )),
       ),

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:iu_pathway_guide/models/courses-model.dart';
-import 'package:iu_pathway_guide/screens/sign-up-screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../models/users-model.dart';
 import '../widgets/custom-bottom-nav.dart';
@@ -35,21 +35,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       TextEditingController(text: "Your initial value");
   final TextEditingController addressController =
       TextEditingController(text: "Your initial value");
-  final TextEditingController semesterController =
-      TextEditingController(text: "Your initial value");
   final _formKey = GlobalKey<FormState>();
 
   FocusNode nameFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
   FocusNode semesterFocus = FocusNode();
   FocusNode addressFocus = FocusNode();
-
+  String _selectedSemester = "";
   User? user = FirebaseAuth.instance.currentUser;
   XFile? _image;
 
-  // var uuid = Uuid();
-  // String _sessionToken = '123456';
-  // List<dynamic> _placeList = [];
+  List semesters = [
+    '1st Semester',
+    '2nd Semester',
+    '3rd Semester',
+    '4th Semester',
+    '5th Semester',
+    '6th Semester',
+    '7th Semester',
+    '8th Semester',
+  ];
 
   void onAuthChange() {
     _auth.authStateChanges().listen((User? user) async {
@@ -85,7 +90,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     userData.first.then((value) {
       nameController.text = value.get("name");
       emailController.text = value.get("email");
-      semesterController.text = value.get("semesters");
       addressController.text = value.get("address");
     });
   }
@@ -102,7 +106,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     emailController.text;
     // phoneController.text;
     addressController.text;
-    semesterController.text;
 
     getUserInfo();
 
@@ -166,7 +169,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final data = query.data() as Map<String, dynamic>;
     data['name'] = nameController.text;
     data['address'] = addressController.text;
-    data['department'] = semesterController.text;
+    data['semesters'] = _selectedSemester;
     data['selectedCourses'] = courses;
     _firestore.collection('users').doc(user.email).set(data).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -185,17 +188,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final image =
             await ImagePicker().pickImage(source: ImageSource.gallery);
         var imageTemporary = File(image!.path);
-        print(image);
+
         if (image != null) {
           var snapshot = (await firebaseStorage
               .ref()
               .child('users/${image.name}')
               .putFile(imageTemporary));
-          print("snapshot");
-          print(snapshot);
+
           var downloadUrl = await snapshot.ref.getDownloadURL();
-          print("image Url");
-          print(downloadUrl);
+
           User? user = _auth.currentUser;
           DocumentSnapshot query = await FirebaseFirestore.instance
               .collection('users')
@@ -352,10 +353,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             final email = users.get('email');
             String profilePic;
             String address;
-            String semester;
+
             List<dynamic> courses = [];
             courses = users.get('selectedCourses');
-            semester = users.get('semesters').toString();
+            _selectedSemester = users.get('semesters');
 
             try {
               coursesName = courses;
@@ -374,7 +375,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               selectedCourses: courses,
               email: email,
               address: address,
-              semester: semester,
+              semester: _selectedSemester,
               profilePic: profilePic,
             );
 
@@ -392,9 +393,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               itemCount: _users.length,
               itemBuilder: (context, index) {
                 return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   height: height,
                   width: width,
                   child: Column(
@@ -498,7 +497,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         spreadRadius: 2,
                                         blurRadius: 5)
                                   ]),
-                              height: height*1.1,
+                              height: height * 1.1,
                               width: width,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -609,19 +608,75 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         FocusScope.of(context)
                                             .requestFocus(semesterFocus);
                                       }),
-                                  textFormFieldWidget(
-                                      controller: semesterController,
-                                      hintText: 'Semester',
-                                      height: height * 0.06,
-                                      keyboardType: TextInputType.text,
-                                      focusNode: semesterFocus,
-                                      onFieldSubmitted: (term) {
-                                        semesterFocus.unfocus();
+                                  // textFormFieldWidget(
+                                  //     controller: semesterController,
+                                  //     hintText: 'Semester',
+                                  //     height: height * 0.06,
+                                  //     keyboardType: TextInputType.text,
+                                  //     focusNode: semesterFocus,
+                                  //     onFieldSubmitted: (term) {
+                                  //       semesterFocus.unfocus();
 
-                                        // FocusScope.of(context).requestFocus(emailFocus);
-                                      }
-                                      // textInputAction: TextInputAction.next,
-                                      ),
+                                  //       // FocusScope.of(context).requestFocus(emailFocus);
+                                  //     }
+                                  //     // textInputAction: TextInputAction.next,
+                                  //     ),
+                                  Container(
+                                    // margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    height: height * 0.06,
+                                    // width: width,
+                                    margin: EdgeInsets.fromLTRB(20, 25, 20, 0),
+                                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xffF3F3F3),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Color(0xff707070)
+                                                  .withOpacity(0.20),
+                                              spreadRadius: 2,
+                                              blurRadius: 3,
+                                              offset: Offset(0, 4))
+                                        ]),
+
+                                    child: DropdownButton(
+                                        underline: Container(),
+                                        // icon: Icon(Icons
+                                        //     .calendar_view_day_outlined),
+                                        isExpanded: true,
+                                        hint: Text(
+                                          'Select Semester',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff979797),
+                                          ),
+                                        ), // Not necessary for Option 1
+                                        value: _selectedSemester,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            _selectedSemester =
+                                                newValue.toString();
+                                          });
+                                        },
+                                        items: semesters.map((location) {
+                                          return DropdownMenuItem(
+                                            child: new Text(
+                                              location,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w500,
+                                                color: Color(0xff979797),
+                                              ),
+                                            ),
+                                            value: location,
+                                          );
+                                        }).toList()),
+                                  ),
+
                                   SizedBox(
                                     height: 15,
                                   ),
@@ -659,8 +714,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           padding:
                                               const EdgeInsets.only(left: 20.0),
                                           child: MyDropdownButton(
-                                            selectedSemester:
-                                                semesterController.text,
+                                            selectedSemester: _selectedSemester,
                                             onChanged: selectCourses,
                                           ),
                                         ),
@@ -699,13 +753,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           )),
                                     ),
                                   ),
+
                                   // SizedBox(height: height*0.1,)
                                 ],
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: height*0.14,)
+                        SizedBox(
+                          height: height * 0.14,
+                        )
                       ]),
                 );
               },
@@ -714,5 +771,73 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+}
+
+class MyDropdownButton extends StatefulWidget {
+  final String? selectedSemester;
+  final void Function(List<CoursesModel>)? onChanged;
+  const MyDropdownButton(
+      {super.key, this.selectedSemester, required this.onChanged});
+
+  @override
+  _MyDropdownButtonState createState() => _MyDropdownButtonState();
+}
+
+class _MyDropdownButtonState extends State<MyDropdownButton> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('courses').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text("Please Select Semester First");
+          }
+
+          final fetchCourses = snapshot.data!.docs;
+          List<CoursesModel> _fetchCourses = [];
+          for (var courses in fetchCourses) {
+            final name = courses.get('name');
+            final id = courses.get('id');
+            final location = courses.get('location');
+            final day = courses.get('day');
+            final time = courses.get('time');
+            // final semester = courses.get('semester');
+            String semester;
+            try {
+              semester = courses.get('semester');
+            } catch (e) {
+              semester = "";
+            }
+
+            final _course = CoursesModel(
+              name: name,
+              id: id,
+              day: day,
+              location: location,
+              time: time,
+              semester: semester,
+            );
+
+            _fetchCourses.add(_course);
+          }
+
+          List<CoursesModel> itemList = _fetchCourses
+              .where((element) => element.semester == widget.selectedSemester)
+              .toList();
+
+          print(itemList);
+
+          return DropdownSearch<CoursesModel>.multiSelection(
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                    border: InputBorder.none, hintText: "Select Courses"),
+              ),
+              items: itemList,
+              itemAsString: (CoursesModel u) => u.name!,
+              onChanged: widget.onChanged);
+        });
   }
 }

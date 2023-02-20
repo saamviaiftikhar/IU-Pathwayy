@@ -86,8 +86,6 @@ class GoogleLogin {
           'selectedCourses': [],
         });
 
-        print("working fine here");
-
         Get.to(() => ExploreScreen(
               isGuest: true,
             ));
