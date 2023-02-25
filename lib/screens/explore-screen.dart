@@ -29,19 +29,45 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  List<PlacesModel> _explorePlaces = [];
+  List<PlacesModel> _places = [];
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
+    getPlaces();
     super.initState();
   }
 
   bool _value = false;
 
+  Future<List<PlacesModel>> getPlaces() async {
+    await FirebaseFirestore.instance
+        .collection('places')
+        .orderBy('rating', descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        setState(() {
+          _explorePlaces.add(PlacesModel(
+            id: element.get('id'),
+            name: element.get('name'),
+            image: element.get('image'),
+            rating: (element.get('rating') as num?)?.toDouble(),
+            location: element.get('location'),
+            closingTime: element.get('closingTime'),
+          ));
+        });
+      });
+    });
+
+    return _places;
+  }
+
   Widget _textFieldWidget({
     required String hintText,
     String? labelText,
+    Function()? onTap,
     var errorStyle,
     required double height,
     var labelStyle,
@@ -82,6 +108,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           // ]
           ),
       child: TextFormField(
+        onTap: onTap,
         controller: controller,
         initialValue: initialValue,
         focusNode: focusNode,
@@ -318,6 +345,33 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   ],
                                 )),
                           ),
+                          onTap: () {
+                            _explorePlaces.forEach((element) {
+                              _places.add(element);
+                            });
+                          },
+                          onChanged: (value) {
+                            if (value != "") {
+                              _explorePlaces.clear();
+                              _places.forEach((element) {
+                                if (element.name!
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase())) {
+                                  print(element.name);
+                                  _explorePlaces.add(element);
+                                  setState(() {});
+                                }
+                              });
+                            } else {
+                              setState(() {
+                                _explorePlaces.clear();
+                                _places.forEach((element) {
+                                  _explorePlaces.add(element);
+                                });
+                              });
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 15),
                         Expanded(
@@ -326,6 +380,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             height: height,
                             child: ExploreScreenStreams(
                               isGuest: widget.isGuest,
+                              explorePlaces: _explorePlaces,
                             ),
                           ),
                         ),
@@ -344,7 +399,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
 class ExploreScreenStreams extends StatefulWidget {
   final bool isGuest;
-  const ExploreScreenStreams({Key? key, required this.isGuest})
+  final List<PlacesModel> explorePlaces;
+  ExploreScreenStreams(
+      {Key? key, required this.isGuest, required this.explorePlaces})
       : super(key: key);
 
   @override
@@ -630,76 +687,33 @@ class _ExploreScreenStreamsState extends State<ExploreScreenStreams> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore
-          .collection('places')
-          .orderBy('rating', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.teal,
-            ),
+    return widget.explorePlaces.isEmpty
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : SizedBox(
+            height: double.infinity,
+            child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                // ignore: unnecessary_null_comparison
+                itemCount: widget.explorePlaces.length,
+                itemBuilder: (context, int index) {
+                  return buildExplorePlaces(
+                      name: widget.explorePlaces[index].name ?? '',
+                      image: widget.explorePlaces[index].image as String,
+                      location: widget.explorePlaces[index].location as String,
+                      closingTime:
+                          widget.explorePlaces[index].closingTime as String,
+                      rating: widget.explorePlaces[index].rating as double,
+                      placeId: widget.explorePlaces[index].id as String,
+                      onTap: () {
+                        Get.to(() => NavigationScreen(
+                              isGuest: widget.isGuest,
+                            ));
+                      });
+                }),
           );
-        }
-        final explorePlaces = snapshot.data!.docs;
-        List<PlacesModel> _explorePlaces = [];
-        for (var places in explorePlaces) {
-          final name = places.get('name');
-          final id = places.get('id');
-          // final vendorId = places.get('vendorId');
-
-          final location = places.get('location');
-          final closingTime = places.get('closingTime');
-          final rating = (places.get('rating') as num?)?.toDouble();
-          // final totalRatings = places.get('totalRatings').toString();
-
-          String image;
-          try {
-            image = places.get('image').toString();
-          } catch (e) {
-            image = "";
-          }
-
-          final _place = PlacesModel(
-            name: name,
-            id: id,
-            image: image,
-            location: location,
-            closingTime: closingTime,
-            // vendorId: vendorId,
-            rating: rating,
-            // totalRatings: totalRatings,
-          );
-
-          _explorePlaces.add(_place);
-        }
-
-        return SizedBox(
-          height: double.infinity,
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              physics: const BouncingScrollPhysics(),
-              shrinkWrap: true,
-              // ignore: unnecessary_null_comparison
-              itemCount: _explorePlaces.length,
-              itemBuilder: (context, int index) {
-                return buildExplorePlaces(
-                    name: _explorePlaces[index].name ?? '',
-                    image: _explorePlaces[index].image as String,
-                    location: _explorePlaces[index].location as String,
-                    closingTime: _explorePlaces[index].closingTime as String,
-                    rating: _explorePlaces[index].rating as double,
-                    placeId: _explorePlaces[index].id as String,
-                    onTap: () {
-                      Get.to(() => NavigationScreen(
-                            isGuest: widget.isGuest,
-                          ));
-                    });
-              }),
-        );
-      },
-    );
   }
 }
