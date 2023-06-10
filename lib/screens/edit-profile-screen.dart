@@ -410,7 +410,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             height: height * 0.17,
                             width: width,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Row(
@@ -418,7 +418,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   children: [
                                     Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 25.0),
+                                          const EdgeInsets.only(right: 20.0),
                                       child: InkWell(
                                         onTap: () {
                                           Get.to(() => HomeScreen());
@@ -440,14 +440,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 fontFamily: 'Roboto',
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.white)),
-                                        Text(
-                                          _users[index].name,
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            letterSpacing: 3.0,
+                                        Padding(
+                                          padding: const EdgeInsets.only(),
+                                          child: Container(
+                                            height: height * 0.03,
+                                            width: width * 0.61,
+                                            color: Colors.transparent,
+                                            child: Text(
+                                              // 'MUhee UDDIn abrro',
+                                              _users[index].name,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                letterSpacing: 1.3,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -457,8 +466,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 (profilePic != '')
                                     ? Container(
                                         // margin: EdgeInsets.only(bottom: 3),
-                                        height: 100,
-                                        width: 100,
+                                        height: 90,
+                                        width: 70,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             shape: BoxShape.circle,
@@ -469,8 +478,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       )
                                     : Container(
                                         // margin: EdgeInsets.only(bottom: 3),
-                                        height: 100,
-                                        width: 100,
+                                        height: 90,
+                                        width: 70,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             shape: BoxShape.circle,

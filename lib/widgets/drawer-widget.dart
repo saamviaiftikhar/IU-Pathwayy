@@ -108,22 +108,33 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
                                 onTap: () {
                                   Get.back();
                                 },
                                 child: SvgPicture.asset('assets/arrow-back.svg',
-                                    color: Colors.white),
+                                    width: width * 0.05, color: Colors.white),
                               ),
-                              Text(
-                                r'Hello, ' '${_users[index].name}',
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.bold),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 9, right: 2),
+                                child: Container(
+                                  width: width * 0.49,
+                                  height: height * 0.03,
+                                  color: Colors.transparent,
+                                  child: Text(
+                                    // 'Hello Syed Shehroz Akbar',
+                                  
+                                    '${_users[index].name}',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
                               InkWell(
                                 onTap: () {
@@ -134,13 +145,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 },
                                 child: (profilePic != '')
                                     ? CircleAvatar(
-                                        radius: 18,
+                                        radius: 16,
                                         backgroundColor: Colors.transparent,
                                         backgroundImage:
                                             NetworkImage(profilePic),
                                       )
                                     : CircleAvatar(
-                                        radius: 18,
+                                        radius: 16,
                                         backgroundColor: Colors.transparent,
                                         backgroundImage:
                                             AssetImage('assets/user.png'),

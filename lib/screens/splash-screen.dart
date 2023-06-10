@@ -132,6 +132,15 @@ class _SplashScreenState extends State<SplashScreen> {
                     ]),
               ],
             )),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xff1e4488),
+          mini: false,
+          onPressed: () {},
+          child: Icon(
+            Icons.send,
+            size: 28,
+          ),
+        ),
       ),
     );
   }
